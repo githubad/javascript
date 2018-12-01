@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Canvas</title>
+</head>
+<body>
+  <div class="right-click">
+    <ul>
+      <span>Increase Line Width</span>
+      <li><input name="lineWidth" type="range" min="1" max="100" value="1" step="1" /></li>
+      <span>Color</span>
+      <li><input type="button" value="Reset Color & Line Width" name="resetColor"/></li>
+      <li><input name="color" type="color" value="#ffffff" min="1" max="100" step="1" /></li>
+      <br />
+      <span>Save Image</span>
+      <li><input type="button" value="Save" name="save"/></li>
+      <br />
+      <span>Clear Canvas</span>
+      <li><input type="button" value="Clear Canvas" name="clear"/></li>
+
+
+    </ul>
+  </div>
+<canvas id="draw" width="800" height="800"></canvas>
+
+<style>
+  html, body {
+    margin:0;
+
+  }
+
+  .right-click {
+    background: linear-gradient(180deg, rgba(228, 220, 220, 1), rgba(133, 127, 127, 1) ) ;
+    border-radius: 10px;
+    width: 230px;
+    min-height:300px;
+    position:absolute;
+    top: 50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    display:none;
+  }
+
+
+ul {
+  list-style: none;
+  margin:0 auto;
+  margin-top:20px;
+}
+
+ul span {
+  font-size:1.2em;
+  color:white;
+}
+</style>
+<script type="text/javascript">
+
+
+// Fun HTML 5 Canvas
+const canvas = document.querySelector('#draw');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+ctx.strokeStyle = "#BADA55";
+ctx.lineJoin = "round";
+ctx.lineCap = "round";
+ctx.lineWidth = "1";
+ctx.globalCompositeOperation = "multiply";
+let isDrawing = false;
+let lastX = 0;
+let lastY = 0;
+let hue = 0;
+let rightChange = false;
+
+function draw(e) {
+  if(e.buttons != 2) {
+  rightClick.style.display = 'none';
+  if(!isDrawing) return;
+  if(!rightChange) {ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`};
+  ctx.beginPath();
+  ctx.moveTo(lastX, lastY);
+  ctx.lineTo(e.offsetX, e.offsetY);
+  ctx.stroke();
+  [lastX, lastY] = [e.offsetX , e.offsetY];
+  hue++;
+  }
+}
+
+canvas.addEventListener('mousedown', (e) => {
+  // console.log(e.buttons);
+  isDrawing = true;
+  [lastX, lastY] = [e.offsetX , e.offsetY];
+});
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', () => isDrawing = false);
+canvas.addEventListener('mouseout', () => isDrawing = false);
+
+
+function rightMenu(e) {
+  e.preventDefault();
+  rightClick.style.cssText =
+  `display:block; top: ${e.pageY + 50 }px; left:${e.pageX + 50}px`;
+}
+
+function prophandler() {
+  // console.log(this.name);
+  if(this.name === 'lineWidth'){
+  ctx.lineWidth = `${this.value}`;
+}
+
+if(this.name === 'color') {
+  console.log(this.value)
+  rightChange = true;
+  ctx.strokeStyle = `${this.value}`;
+}
+
+if(this.name === 'resetColor') {
+  rightChange = false;
+  ctx.lineWidth = '1';
+}
+
+if(this.name === 'save') {
+    const data =  canvas.toDataURL('image/png');
+    const link  =  document.createElement(`a`);
+    link.href = data;
+    link.setAttribute('download','creative');
+    link.click();
+ }
+
+ if(this.name === 'clear') {
+   ctx.clearRect(0,0,canvas.width, canvas.height);
+ }
+}
+
+document.addEventListener('contextmenu', rightMenu);
+const rightClick = document.querySelector('.right-click');
+const inputs = rightClick.querySelectorAll('input');
+inputs.forEach(e => e.addEventListener('change', prophandler))
+inputs.forEach(e => e.addEventListener('click', prophandler))
+
+
+</script>
+<!-- <script type="text/javascript" src="../bundle.js"></script> -->
+</body>
+</html>

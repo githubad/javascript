@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS + CSS Clock</title>
+  </head>
+<body>
+
+
+    <div class="clock">
+      <div class="clock-face">
+        <div class="hand hour-hand"></div>
+        <div class="hand min-hand"></div>
+        <div class="hand second-hand"></div>
+        <div class="digital">11:20</div>
+      </div>
+    </div>
+
+
+  <style>
+    html {
+      background:#018DED url(https://images.unsplash.com/photo-1504257365157-1496a50d48f2?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=cd9045b6436e90624f908f6ede529f97&auto=format&fit=crop&w=1050&q=80) fixed no-repeat;
+      opacity:0.6;
+      background-size:cover;
+      font-family:'helvetica neue';
+      text-align: center;
+      font-size: 10px;
+    }
+    .digital {
+      position:absolute;
+      top:52vh;
+      left:24vh;
+      font-size:2.5em;
+      background:white;
+      border-radius:30px;
+      padding:10px;
+      padding-bottom:20px;
+      /* text-transform: uppercase; */
+      text-shadow: 4px 4px white;
+      z-index:-1;
+    }
+
+    body {
+      margin: 0;
+      font-size: 2rem;
+      display:flex;
+      flex:1;
+      min-height: 80vh;
+      align-items: center;
+    }
+  .stopTransition {
+    transition:none !important;
+  }
+    .clock {
+      width: 65rem;
+      height: 65rem;
+      border:10px solid white;
+      border-radius:50%;
+      margin:50px auto;
+      position: relative;
+      padding:5rem;
+      box-shadow:
+        0 0 0 4px rgba(0,0,0,0.1),
+        inset 0 0 0 3px #EFEFEF,
+        inset 0 0 10px black,
+        0 0 10px rgba(0,0,0,0.2);
+        background: url(http://www.shop.sk-watchparts.com/WebRoot/Sage/Shops/Starck_Andreas44894456/541D/4DD0/9BBD/3184/5D81/0A0C/05E0/CA35/D01060-01sw_ml.jpg) no-repeat center ;
+    }
+
+    .clock-face {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform: translateY(-3px); /* account for the height of the clock hands */
+    }
+
+    .hand {
+      width:50%;
+      height:6px;
+      background:black;
+      position: absolute;
+      top:50%;
+      transform-origin:100%;
+      transform: rotate(90deg);
+      transition: all 0.5s;
+      transition-timing-function: cubic-bezier(0.1,2.7,0.58,1);
+    }
+
+  </style>
+
+  <script>
+
+  // // 02 - //Date Clock - Analog
+  const secondHand = document.querySelector('.second-hand');
+  const minHand = document.querySelector('.min-hand');
+  const hourHand =  document.querySelector('.hour-hand');
+  const time = document.querySelector('.digital');
+
+  function digitalTime(hours, mins, secs) {
+let amPm = 'am';  
+    hours = hours > 12 ? hours -= 12 : hours;
+    if(hours > 12) {
+       amPm = 'pm';
+     }
+    mins = mins < 10 ? `0${mins}` : mins;
+    secs = secs < 10 ? `0${secs}` : secs;
+    time.innerHTML = `${hours}:${mins}:${secs} ${amPm}`
+  }
+
+  function handAdjust(hand,degrees){
+    degrees == 90 ? hand.classList.add('stopTransition') : hand.classList.remove('stopTransition');
+    hand.style.transform = `rotate(${degrees}deg)`
+  }
+
+  function setDate() {
+
+     const now = new Date();
+     const seconds = now.getSeconds();
+     const secondsDegrees = ((seconds / 60) * 360) + 90;
+     handAdjust(secondHand, secondsDegrees);
+
+
+     const mins = now.getMinutes();
+     const minDegrees = (((mins / 60) * 360) ) + (((seconds / 60) * 6 ) + 90) ;
+     handAdjust(minHand, minDegrees);
+
+
+     const hours = now.getHours();
+     const hourDegrees = (((hours / 12) * 360)) + ((mins / 60) * 30) + 90;
+     handAdjust(hourHand, hourDegrees);
+
+
+     digitalTime(hours, mins, seconds)
+    }
+
+  setInterval(setDate,1000);
+  setDate();
+
+
+
+
+
+  </script>
+
+  <!-- <script type="text/javascript" src="../bundle.js"></script> -->
+
+</body>
+</html>

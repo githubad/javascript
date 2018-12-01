@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Understanding JavaScript's Capture</title>
+</head>
+<body class="bod">
+
+  <div class="one">
+    <div class="two">
+      <div class="three">
+      </div>
+    </div>
+  </div>
+
+<style>
+  html {
+    box-sizing: border-box;
+  }
+  *, *:before, *:after { box-sizing: inherit; }
+
+  div {
+    width:100%;
+    padding:100px;
+  }
+
+  .one {
+    background: thistle;
+  }
+
+  .two {
+    background:mistyrose;
+  }
+
+  .three {
+    background:coral;
+  }
+</style>
+
+<button></button>
+<script>
+
+
+// Event Capture, Propogation, Bubbling and Once
+const divs = document.querySelectorAll('div');
+
+function logText(e) {
+  console.log(this);
+  // if bubbling, which is capture false or default state, then stopPropagation stops bubbling and capture only on what's clicked
+  e.stopPropagation();
+}
+
+divs.forEach(e => e.addEventListener('click', logText, {capture: false, once: true}))
+
+</script>
+<!-- <script type="text/javascript" src="../bundle.js"> -->
+
+</script>
+</body>
+</html>

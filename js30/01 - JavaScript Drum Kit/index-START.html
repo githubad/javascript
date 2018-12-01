@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS Drum Kit</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- <script type="text/javascript" src="../bundle.js"></script> -->
+</head>
+<body>
+
+
+  <div class="keys">
+    <div data-key="65" class="key">
+      <kbd>A</kbd>
+      <span class="sound">claps</span>
+    </div>
+    <div data-key="83" class="key">
+      <kbd>S</kbd>
+      <span class="sound">hihat</span>
+    </div>
+    <div data-key="68" class="key">
+      <kbd>D</kbd>
+      <span class="sound">kick</span>
+    </div>
+    <div data-key="70" class="key">
+      <kbd>F</kbd>
+      <span class="sound">openhat</span>
+    </div>
+    <div data-key="71" class="key">
+      <kbd>G</kbd>
+      <span class="sound">boom</span>
+    </div>
+    <div data-key="72" class="key">
+      <kbd>H</kbd>
+      <span class="sound">ride</span>
+    </div>
+    <div data-key="74" class="key">
+      <kbd>J</kbd>
+      <span class="sound">snare</span>
+    </div>
+    <div data-key="75" class="key">
+      <kbd>K</kbd>
+      <span class="sound">tom</span>
+    </div>
+    <div data-key="76" class="key">
+      <kbd>L</kbd>
+      <span class="sound">tink</span>
+    </div>
+    <div data-key="192" class="key">
+      <kbd>~</kbd>
+      <span class="sound">MASTER</span>
+    </div>
+  </div>
+
+  <audio data-key="65" src="sounds/clap.wav"></audio>
+  <audio data-key="83" src="sounds/hihat.wav"></audio>
+  <audio data-key="68" src="sounds/kick.wav"></audio>
+  <audio data-key="70" src="sounds/openhat.wav"></audio>
+  <audio data-key="71" src="sounds/boom.wav"></audio>
+  <audio data-key="72" src="sounds/ride.wav"></audio>
+  <audio data-key="74" src="sounds/snare.wav"></audio>
+  <audio data-key="75" src="sounds/tom.wav"></audio>
+  <audio data-key="76" src="sounds/tink.wav"></audio>
+  <audio data-key="192" src="sounds/clap.wav"></audio>
+
+<script>
+
+let key;
+
+window.addEventListener('keydown', function(e)
+{
+  if(e.keyCode == 192) {
+    const sequence =  document.querySelectorAll(`audio[data-key]`);
+    // console.log(sequence);
+    let index = 1000;
+    const html = document.querySelector('html');
+    sequence.forEach( seq => {
+      seq.currentTime = 0;
+      const key192 = document.querySelector(`.key[data-key="${seq.dataset.key}"]`);
+      // console.log(key192);
+
+       setTimeout(() => {
+        seq.play();
+        html.style.background = ' url(https://images.unsplash.com/photo-1505236858219-8359eb29e329?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=d14a810136c7528ba19f04ff77b8130d&auto=format&fit=crop&w=1130&q=80)'  +  (Math.random()  * (250 - 50) + 50) + '% ' + (Math.random() * (250 - 50) + 50) + '% ' ;
+        html.style.transform = 'scale(' + (Math.random() * (1 - 0.8) + 0.8) + ')' ;
+
+         key192.classList.add('playing');
+       }, index);
+       index += 500;
+     });
+     const keys = document.querySelectorAll('.key');
+     keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+
+
+     return;
+  }
+
+  const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+  if (!audio) return;
+  audio.currentTime = 0;
+  audio.play();
+
+
+  const html = document.querySelector('html');
+  html.style.background = ' url(https://images.unsplash.com/photo-1511220043390-e929fe0edf55?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=19b37d4062df54a5f9b14b675b610c5f&auto=format&fit=crop&w=1050&q=80)'  +  (Math.random()  * (250 - 50) + 50) + '% ' + (Math.random() * (250 - 50) + 50) + '% ' ;
+  html.style.transform = 'scale(' + (Math.random() * (1 - 0.8) + 0.8) + ')' ;
+
+  key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+  key.classList.add('playing');
+  // html.classList.add('playing');
+
+  const keys = document.querySelectorAll('.key');
+  keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+  // html.addEventListener('transitionend', removeTransition);
+
+
+});
+
+
+function removeTransition(e) {
+if(e.propertyName !== 'transform') return;
+ this.classList.remove('playing');
+ }
+
+
+</script>
+
+
+</body>
+</html>

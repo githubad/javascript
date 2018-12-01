@@ -1,0 +1,81 @@
+
+// Webcam fun
+const video = document.querySelector('.player');
+const canvas = document.querySelector('.photo');
+const ctx = canvas.getContext('2d');
+const strip = document.querySelector('.strip');
+const snap = document.querySelector('.snap');
+
+function getVideo() {
+  navigator.mediaDevices.getUserMedia({video: true, audio: false})
+  .then(localMediaStream => {
+    //  console.log(localMediaStream);
+      video.src = window.URL.createObjectURL(localMediaStream);
+      video.play();
+  })
+  .catch(err => { console.error('Error loading webcam', err);
+});
+}
+
+function paintToCanvas() {
+  const width = video.videoWidth;
+  const height = video.videoHeight;
+  canvas.width = width;
+  canvas.height = height;
+  return setInterval(() => {
+    ctx.drawImage(video, 0, 0, width, height);
+    let pixels = ctx.getImageData(0,0, width, height);
+    // console.log(pixels);
+    // debugger;
+   // pixels = redEffect(pixels);
+    pixels = rgbSplit(pixels);
+    // ctx.globalAlpha = 0.5;
+   ctx.putImageData(pixels, 0,0);
+ }, 32);
+}
+
+function takePhoto() {
+  //played the sound
+  snap.currentTime = 0;
+  snap.play();
+
+  // take the data out of the canvas
+  const data =  canvas.toDataURL('image/jpeg');
+  const link  =  document.createElement(`a`);
+  link.href = data;
+  link.setAttribute('download','handsome');
+  link.innerHTML = `<img src="${data}" alt="Handsome Developer" />`;
+  strip.insertBefore(link, strip.firstChild);
+
+}
+
+
+function redEffect(pixels) {
+  for(let i = 0; i < pixels.data.length; i += 4){
+    pixels.data[i + 0] =   pixels.data[i + 0] + 96; //Red
+    pixels.data[i + 1] =   pixels.data[i + 1] + 36; //Green
+    pixels.data[i + 2] =   pixels.data[i + 2] * 0.4; //Blue
+  }
+  return pixels;
+}
+
+
+function rgbSplit(pixels) {
+  for(let i = 0; i < pixels.data.length; i += 4){
+    pixels.data[i - 150] =   pixels.data[i + 0] ; //Red
+    pixels.data[i + 500] =   pixels.data[i + 1] ; //Green
+    pixels.data[i - 550] =   pixels.data[i + 2] ; //Blue
+  }
+  return pixels;
+}
+
+getVideo();
+//TO DO
+function greenScreen() {
+  const levels = {};
+}
+
+video.addEventListener('canplay', paintToCanvas);
+
+const button = document.querySelector('.clickMe');
+button.addEventListener('click', takePhoto);
